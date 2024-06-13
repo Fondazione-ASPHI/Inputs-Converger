@@ -10,3 +10,5 @@ Thanks to
 * [Pyserial](https://github.com/pyserial/pyserial)
 
 for enabling this project!
+
+<img src="logo.png" alt="drawing" width="200"/>
