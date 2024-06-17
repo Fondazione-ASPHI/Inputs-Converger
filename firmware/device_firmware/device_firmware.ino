@@ -7,62 +7,42 @@
 #define CMD_SIZE 6
 
 // Set up a new SoftwareSerial object
-SoftwareSerial mySerial (rxPin, txPin);
-String str = "";
+SoftwareSerial swSerial (rxPin, txPin);
 
-// Button Setup
-const int NumButtons = 10;
-const int Buttons[NumButtons] = {
-	BUTTON_A,
-	BUTTON_B,
-	BUTTON_X,
-	BUTTON_Y,
-	BUTTON_LB,
-	BUTTON_RB,
-	BUTTON_BACK,
-	BUTTON_START,
-	BUTTON_L3,
-	BUTTON_R3,
-};
-
-// Triggers
-const int TriggerMax = 255;  // uint8_t max
-unsigned long triggerTimeLast = 0;
-uint8_t triggerVal = 0;
-boolean triggerDirection = 0;
-
-// Joystick Setup
-const int JoyMax = 32767;  // int16_t max
-double angle = 0.0;
-
-String commands[CMD_SIZE];
+// String commands[CMD_SIZE];
 
 
-String readData(String data, char separator)
-{
-  int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length()-1;
+// String readData(String data, char separator)
+// {
+//   int found = 0;
+//   int strIndex[] = {0, -1};
+//   int maxIndex = data.length();
 
-  for (int j=0; j<CMD_SIZE; j++){
-    for(int i=0; i<=maxIndex; i++){
-      if(data.charAt(i)==separator || i==maxIndex){
-          found++;
-          strIndex[0] = strIndex[1]+1;
-          strIndex[1] = (i == maxIndex) ? i+1 : i;
-      }
-    }
-    commands[j] = data.substring(strIndex[0], strIndex[1]);// : "";
-  }
-}
+//   for (int j=0; j<CMD_SIZE; j++){
+//     for(int i=0; i<maxIndex; i++){
+//       if(data.charAt(i)==separator || i==maxIndex){
+//           found++;
+//           strIndex[0] = strIndex[1]+1;
+//           strIndex[1] = (i == maxIndex) ? i+1 : i;
+//       }
+//     }
+//     commands[j] = data.substring(strIndex[0], strIndex[1]);// : "";
+//   }
+// }
+
+const byte numChars = 32;
+char receivedChars[numChars];
+boolean newData = false;
 
 
 void setup() {  
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
-  mySerial.begin(9600);
 
   pinMode(LED_BUILTIN, OUTPUT);
+
+  swSerial.begin(9600);
+  swSerial.println("<Device is ready>");
 
 	XInput.setAutoSend(false);  // Wait for all controls before sending
 	XInput.begin();
@@ -70,33 +50,43 @@ void setup() {
 
 
 void loop() {
-  if (mySerial.available() > 0) {
-    str = mySerial.readString();
-    str.trim();
-    digitalWrite(LED_BUILTIN, HIGH);
 
-    if (str == "test"){
-      XInput.press(BUTTON_A);      
-      XInput.send();
-      delay(1000);
-      XInput.release(BUTTON_A);	    
-      XInput.send();
-      delay(1000);
-    }
+
+  recvWithStartEndMarkers();
+  showNewData();
+
+
+
+  // if (mySerial.available() > 0) {
+  //   String str = mySerial.readString();
+  //   str.trim();
+  //   mySerial.println(str);
+
+  //   if (str == "hello") {
+  //     digitalWrite(LED_BUILTIN, HIGH);
+  //   }
+
+  //   if (str ==  "test") {
+  //     XInput.press(BUTTON_A);      
+  //     XInput.send();
+  //     delay(500);
+  //     XInput.release(BUTTON_A);	    
+  //     XInput.send();
+  //   }
 
     // FILL UP COMMANDS ARRAY
-    readData(str, ",");
+    //readData(str, ",");
 
     // DPad
     //XInput.setDpad(dpadPosition == 0, dpadPosition == 1, dpadPosition == 2, dpadPosition == 3);
 
     // Buttons
-    if (commands[0] == "true") {
-      XInput.press(BUTTON_A);
-    }
-    else{
-      XInput.release(BUTTON_A);
-    }
+    // if (commands[0] == "true") {
+    //   XInput.press(BUTTON_A);
+    // }
+    // else{
+    //   XInput.release(BUTTON_A);
+    // }
 
     // Triggers
     //XInput.setTrigger(TRIGGER_LEFT, 0);
@@ -107,9 +97,56 @@ void loop() {
 
 
     // Send values
-    XInput.send();
+    //XInput.send();
 
     //mySerial.println("done");
-  }
 
+}
+
+
+
+void recvWithStartEndMarkers() {
+    static boolean recvInProgress = false;
+    static byte ndx = 0;
+    char startMarker = '<';
+    char endMarker = '>';
+    char rc;
+ 
+    while (swSerial.available() > 0 && newData == false) {
+        rc = swSerial.read();
+
+        if (recvInProgress == true) {
+            if (rc != endMarker) {
+                receivedChars[ndx] = rc;
+                ndx++;
+                if (ndx >= numChars) {
+                    ndx = numChars - 1;
+                }
+            }
+            else {
+                receivedChars[ndx] = '\0'; // terminate the string
+                recvInProgress = false;
+                ndx = 0;
+                newData = true;
+            }
+        }
+
+        else if (rc == startMarker) {
+            recvInProgress = true;
+        }
+    }
+}
+
+void showNewData() {
+    if (newData == true) {
+      swSerial.println(receivedChars);
+        
+      XInput.press(BUTTON_A);      
+      XInput.send();
+      delay(500);
+      XInput.release(BUTTON_A);	    
+      XInput.send();
+        
+      newData = false;
+    }
 }

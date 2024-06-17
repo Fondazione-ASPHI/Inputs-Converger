@@ -5,6 +5,7 @@ class Gamepad():
     def __init__(self, port, baud=9600):
         super().__init__()
         self.serial = serial.Serial(port, baud)
+        self.serial.write(b"hello")
         print("Opened serial on port {port}, baud {baud}")
         self.reset_state()
         self.update()
