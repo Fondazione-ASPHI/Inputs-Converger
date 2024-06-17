@@ -12,8 +12,8 @@ class Gamepad():
 
     def reset_state(self):
         self.state = {
-            "A": "false",
-            "B": "false",
+            "A": "0",
+            "B": "0",
             "LeftTrigger": "0",
             "RightTrigger": "0",
             "LeftAnalog": "0-0",
