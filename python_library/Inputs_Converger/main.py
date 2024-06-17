@@ -1,46 +1,51 @@
-import time
 import serial
-import keyboard
-
-ser = serial.Serial("COM11", 9600)
-print("opened")
-
 
 
 class Gamepad():
-    def __init__(self, port):
+    def __init__(self, port, baud=9600):
         super().__init__()
-        self.port = port
+        self.serial = serial.Serial(port, baud)
+        print("Opened serial on port {port}, baud {baud}")
         self.reset_state()
         self.update()
 
     def reset_state(self):
         self.state = {
-            "A": False,
-            "B": False,
-            "LeftTrigger": 0,
-            "RightTrigger": 0,
-            "LeftAnalog": (0, 0),
-            "RightAnalog": (0, 0)
+            "A": "false",
+            "B": "false",
+            "LeftTrigger": "0",
+            "RightTrigger": "0",
+            "LeftAnalog": "0-0",
+            "RightAnalog": "0-0"
         }
+    
+    def state_output(self):
+        so = (self.state["A"] + "," +
+                self.state["B"] + "," +
+                self.state["LeftTrigger"] + "," +
+                self.state["RightTrigger"] + "," +
+                self.state["LeftAnalog"] + "," +
+                self.state["RightAnalog"]).encode('ASCII')
+        print(so)
+        return so
 
     def press_button(self, button):
-        self.state[button] = True
+        self.state[button] = "true"
 
     def release_button(self, button):
-        self.state[button] = False
+        self.state[button] = "false"
 
     def left_trigger(self, value): # value is between 0 and 1
-        self.state["LeftTrigger"] = value
+        self.state["LeftTrigger"] = str(value)
 
     def right_trigger(self, value): # value is between 0 and 1
-        self.state["RightTrigger"] = value
+        self.state["RightTrigger"] = str(value)
 
     def left_joystick(self, x_value, y_value):
-        self.state["LeftAnalog"] = (x_value, y_value)
+        self.state["LeftAnalog"] = str(x_value) + "-" + str(y_value)
 
     def right_joystick(self, x_value, y_value):
-        self.state["RightAnalog"] = (x_value, y_value)
+        self.state["RightAnalog"] = str(x_value) + "-" + str(y_value)
 
     def update(self):
-        pass
+        self.serial.write(self.state_output())

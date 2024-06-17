@@ -9,7 +9,7 @@ running = True
 while running:    
     if keyboard.is_pressed("a"):
         print("A")
-        ser.write(b"a")
+        ser.write(b"test")
         time.sleep(1)
 
     if keyboard.is_pressed("q"):
