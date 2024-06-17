@@ -61,15 +61,15 @@ void swRecvOneChar() {
 
 void showNewData() {
   if (newData == true) {
-    Serial.println(receivedChar);
-    swSerial.println(receivedChar);
+    Serial.print(receivedChar);
+    swSerial.print(receivedChar);
     newData = false;
   }
 }
 
 void swShowNewData() {
   if (swNewData == true) {
-    Serial.println(swReceivedChar);
+    Serial.print(swReceivedChar);
     swNewData = false;
   }
 }

@@ -138,15 +138,15 @@ void recvWithStartEndMarkers() {
 }
 
 void showNewData() {
-    if (newData == true) {
-      swSerial.println(receivedChars);
-        
-      XInput.press(BUTTON_A);      
-      XInput.send();
-      delay(500);
-      XInput.release(BUTTON_A);	    
-      XInput.send();
-        
-      newData = false;
-    }
+  if (newData == true) {
+    swSerial.println(receivedChars);
+      
+    XInput.press(BUTTON_A);      
+    XInput.send();
+    delay(500);
+    XInput.release(BUTTON_A);	    
+    XInput.send();
+      
+    newData = false;
+  }
 }
