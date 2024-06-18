@@ -10,8 +10,6 @@
 SoftwareSerial swSerial (rxPin, txPin);
 
 // String commands[CMD_SIZE];
-
-
 // String readData(String data, char separator)
 // {
 //   int found = 0;
@@ -46,6 +44,13 @@ void setup() {
 
 	XInput.setAutoSend(false);  // Wait for all controls before sending
 	XInput.begin();
+
+  // First input to awake console
+  XInput.press(BUTTON_A);
+  delay(500);
+  XInput.release(BUTTON_A);
+  delay(500);
+  XInput.send();
 }
 
 
@@ -55,52 +60,8 @@ void loop() {
   recvWithStartEndMarkers();
   showNewData();
 
-
-
-  // if (mySerial.available() > 0) {
-  //   String str = mySerial.readString();
-  //   str.trim();
-  //   mySerial.println(str);
-
-  //   if (str == "hello") {
-  //     digitalWrite(LED_BUILTIN, HIGH);
-  //   }
-
-  //   if (str ==  "test") {
-  //     XInput.press(BUTTON_A);      
-  //     XInput.send();
-  //     delay(500);
-  //     XInput.release(BUTTON_A);	    
-  //     XInput.send();
-  //   }
-
-    // FILL UP COMMANDS ARRAY
-    //readData(str, ",");
-
-    // DPad
-    //XInput.setDpad(dpadPosition == 0, dpadPosition == 1, dpadPosition == 2, dpadPosition == 3);
-
-    // Buttons
-    // if (commands[0] == "true") {
-    //   XInput.press(BUTTON_A);
-    // }
-    // else{
-    //   XInput.release(BUTTON_A);
-    // }
-
-    // Triggers
-    //XInput.setTrigger(TRIGGER_LEFT, 0);
-    //XInput.setTrigger(TRIGGER_RIGHT, 0);
-
-    //XInput.setJoystick(JOY_LEFT, 0, 0);
-    //XInput.setJoystick(JOY_RIGHT, 0, 0);
-
-
-    // Send values
-    //XInput.send();
-
-    //mySerial.println("done");
-
+  XInput.setJoystick(JOY_LEFT, 32767, 0);
+  XInput.send();
 }
 
 
@@ -140,12 +101,10 @@ void recvWithStartEndMarkers() {
 void showNewData() {
   if (newData == true) {
     swSerial.println(receivedChars);
-      
-    XInput.press(BUTTON_A);      
-    XInput.send();
-    delay(500);
-    XInput.release(BUTTON_A);	    
-    XInput.send();
+
+    //int x =receivedChars - '0';
+    //XInput.setJoystick(JOY_LEFT, x, 0);
+    //XInput.send();
       
     newData = false;
   }

@@ -7,9 +7,10 @@ void setup() {
 }
 
 void loop() {
-	XInput.press(BUTTON_A);
-	delay(1000);
+  XInput.setJoystick(JOY_LEFT, 32767, 0);
+	// XInput.press(BUTTON_A);
+	// delay(1000);
 
-	XInput.release(BUTTON_A);
-	delay(1000);
+	// XInput.release(BUTTON_A);
+	// delay(1000);
 }
