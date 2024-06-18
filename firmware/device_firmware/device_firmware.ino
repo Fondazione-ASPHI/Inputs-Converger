@@ -40,7 +40,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   swSerial.begin(9600);
-  swSerial.println("<Device is ready>");
+  swSerial.write("<Device is ready>");
 
 	XInput.setAutoSend(false);  // Wait for all controls before sending
 	XInput.begin();
@@ -57,16 +57,18 @@ void setup() {
 void loop() {
 
 
-  recvWithStartEndMarkers();
-  showNewData();
+  receiveData();
+  processData();
 
-  XInput.setJoystick(JOY_LEFT, 32767, 0);
+  //XInput.setJoystick(JOY_LEFT, 32767, 0);
   XInput.send();
+
+  swSerial.flush();
 }
 
 
 
-void recvWithStartEndMarkers() {
+void receiveData() {
     static boolean recvInProgress = false;
     static byte ndx = 0;
     char startMarker = '<';
@@ -98,13 +100,14 @@ void recvWithStartEndMarkers() {
     }
 }
 
-void showNewData() {
+void processData() {
   if (newData == true) {
-    swSerial.println(receivedChars);
+    swSerial.write(receivedChars);
 
     //int x =receivedChars - '0';
-    //XInput.setJoystick(JOY_LEFT, x, 0);
-    //XInput.send();
+    XInput.setJoystick(JOY_LEFT, 32767, 0);
+
+    digitalWrite(LED_BUILTIN, HIGH);
       
     newData = false;
   }

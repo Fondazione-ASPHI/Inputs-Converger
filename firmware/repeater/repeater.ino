@@ -32,16 +32,8 @@ void loop() {
   showNewData();
   swShowNewData();
 
-  // mySerial.println("test");
-  // Serial.println("test");
-  // delay(3000);
-
-  // if (Serial.available() > 0) {
-  //   String str = Serial.readString();
-  //   //str.trim();
-  //   Serial.println(str);
-  //   mySerial.println(str);
-  // }
+  swSerial.flush();
+  Serial.flush();
 }
 
 
@@ -61,15 +53,15 @@ void swRecvOneChar() {
 
 void showNewData() {
   if (newData == true) {
-    Serial.print(receivedChar);
-    swSerial.print(receivedChar);
+    Serial.write(receivedChar);
+    swSerial.write(receivedChar);
     newData = false;
   }
 }
 
 void swShowNewData() {
   if (swNewData == true) {
-    Serial.print(swReceivedChar);
+    Serial.write(swReceivedChar);
     swNewData = false;
   }
 }

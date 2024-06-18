@@ -49,6 +49,4 @@ class Gamepad():
         self.state["RightAnalog"] = str(x_value) + "-" + str(y_value)
 
     def update(self):
-        #self.serial.write(self.state_output())
-        print(self.state["LeftTrigger"])
-        self.serial.write(self.state["LeftTrigger"].encode('ASCII'))
+        self.serial.write(self.state_output())

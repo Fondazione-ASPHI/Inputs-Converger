@@ -24,7 +24,9 @@ def logic(nose_x, nose_y, mouth_x, head_tilt, trigger_eyebrows, trigger_mouth_op
   # if y > 9:
   #   y = 9
   cmd = "<" + str(x) + ">"
-  ser.write(cmd.encode('ASCII'))
+  # ser.write(cmd.encode('ASCII'))
+  ser.write(b"<32767>")
+  print(str(ser.read()))
 
 
   # if nose_y > 0:
