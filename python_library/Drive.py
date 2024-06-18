@@ -25,7 +25,7 @@ def logic(nose_x, nose_y, mouth_x, head_tilt, trigger_eyebrows, trigger_mouth_op
   #   y = 9
   cmd = "<" + str(x) + ">"
   # ser.write(cmd.encode('ASCII'))
-  ser.write(b"<32767>")
+  ser.write(b"<a>")
   print(str(ser.read()))
 
 

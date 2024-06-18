@@ -102,10 +102,12 @@ void receiveData() {
 
 void processData() {
   if (newData == true) {
-    swSerial.write(receivedChars);
+    swSerial.write(receivedChars[0]);
 
     //int x =receivedChars - '0';
-    XInput.setJoystick(JOY_LEFT, 32767, 0);
+    if (receivedChars[0] == 'a'){
+      XInput.setJoystick(JOY_LEFT, 32767, 0);
+    }    
 
     digitalWrite(LED_BUILTIN, HIGH);
       
