@@ -14,8 +14,7 @@ print("opened")
 running = True
 while running:    
     if keyboard.is_pressed("a"):
-        print("A")
-        ser.write(b"test")
+        ser.write(b"<a>")
         time.sleep(1)
         #ser.flushInput()
 
