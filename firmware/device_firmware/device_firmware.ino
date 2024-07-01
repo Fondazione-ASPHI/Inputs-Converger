@@ -105,9 +105,28 @@ void processData() {
     swSerial.write(receivedChars[0]);
 
     //int x =receivedChars - '0';
-    if (receivedChars[0] == 'a'){
-      XInput.setJoystick(JOY_LEFT, 32767, 0);
-    }    
+    if (receivedChars[0] == 'j'){
+      XInput.setJoystickX(JOY_LEFT, -32767);
+    }
+    else if (receivedChars[0] == 'l'){
+      XInput.setJoystickX(JOY_LEFT, 32767);
+    }
+    else if (receivedChars[0] == 'i'){
+      XInput.setJoystickY(JOY_LEFT, 32767);
+    }
+    else if (receivedChars[0] == 'k'){
+      XInput.setJoystickY(JOY_LEFT, -32767);
+    }
+    else if (receivedChars[0] == 'a'){
+      XInput.press(BUTTON_A);
+      delay(500);
+      XInput.release(BUTTON_A);
+      delay(500);
+    }
+    else {
+      XInput.setJoystickX(JOY_LEFT, 0);
+      XInput.setJoystickY(JOY_LEFT, 0);
+    }
 
     digitalWrite(LED_BUILTIN, HIGH);
       
